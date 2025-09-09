@@ -1,6 +1,6 @@
-def call(string id,string imageName){
+def call(string userid,string imageName){
     withCredentials([usernamePassword(
-        Credentialsid:"${id}",
+        Credentialsid:"dockerhub",
         passwordVar: "dockerHubpass"
         usernameVar: "dockerHubuser"
     )]){
