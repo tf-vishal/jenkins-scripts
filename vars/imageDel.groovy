@@ -3,11 +3,11 @@ def call(String imageName){
         credentialsId: 'dockerhub',
         usernameVariable: 'DOCKER_USER',
         passwordVariable: 'DOCKER_PASS'
-    )])
-
-    sh """
+    )]){
+        sh """
         echo ' Logging in to DockerHub...'
         echo "${DOCKER_PASS}" | docker login --username "${DOCKER_USER}" --password-stdin
 
         docker rmi {imageName}:${BUILD_TAG} || true"""
+    }
 }
