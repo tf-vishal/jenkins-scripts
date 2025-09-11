@@ -1,23 +1,20 @@
 def call(String imageName) {
     withCredentials([usernamePassword(
-        credentialsId: "dockerhub",
-        passwordVariable: "dockerHubPass",
-        usernameVariable: "dockerHubUser"
+        credentialsId: 'dockerhub',
+        usernameVariable: 'DOCKER_USER',
+        passwordVariable: 'DOCKER_PASS'
     )]) {
-        sh "echo '🔑 Logging in to DockerHub...'"
-        sh "echo '${dockerhubPass}' | docker login --username '${dockerhubUser}' --password-stdin"
+        sh """
+        echo ' Logging in to DockerHub...'
+        echo "${DOCKER_PASS}" | docker login --username "${DOCKER_USER}" --password-stdin
 
-        sh "echo '🏷️ Tagging image: ${imageName}'"
-        sh "docker image tag ${imageName} ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+        echo ' Tagging image: ${imageName}:${BUILD_TAG}'
+        docker tag ${imageName}:${BUILD_TAG} ${DOCKER_USER}/${imageName}:${BUILD_TAG}
 
-        sh "echo '📤 Pushing image to DockerHub. ${imageName} ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+        echo ' Pushing image to DockerHub: ${DOCKER_USER}/${imageName}:${BUILD_TAG}'
+        docker push ${DOCKER_USER}/${imageName}:${BUILD_TAG}
 
-        sh "echo '📤 Pushing image to DockerHub...'"
-        sh "docker push ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
-
-        sh "echo '✅ Docker image pushed succes..'"
-        sh "docker push ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
-
-
+        echo '✅ Docker image pushed successfully!'
+        """
     }
 }
