@@ -1,12 +1,23 @@
-def call(string userid,string imageName){
+def call(String imageName) {
     withCredentials([usernamePassword(
-        Credentialsid:"dockerhub",
-        passwordVar: "dockerHubpass"
-        usernameVar: "dockerHubuser"
-    )]){
+        credentialsId: "dockerhub",
+        passwordVariable: "dockerHubPass",
+        usernameVariable: "dockerHubUser"
+    )]) {
+        sh "echo '🔑 Logging in to DockerHub...'"
+        sh "echo '${dockerhubPass}' | docker login --username '${dockerhubUser}' --password-stdin"
 
-        sh "docker login -u ${env.dockerHubuser} -p ${env.dockerHubpass}"
-        sh "docker image tag ${imageName} ${env.dockerHubuser}/${imageName}"
-        sh "docker push ${env.dockerHubuser}/${imageName}:latest"
+        sh "echo '🏷️ Tagging image: ${imageName}'"
+        sh "docker image tag ${imageName} ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+
+        sh "echo '📤 Pushing image to DockerHub. ${imageName} ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+
+        sh "echo '📤 Pushing image to DockerHub...'"
+        sh "docker push ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+
+        sh "echo '✅ Docker image pushed succes..'"
+        sh "docker push ${env.dockerHubUser}/${imageName}:${BUILD_TAG}"
+
+
     }
 }
