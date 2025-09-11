@@ -1,10 +1,12 @@
-def call(String envName, String envPath){
+def call(String envName, String envPath) {
     withCredentials([
-        file(credentialsId: envName}),
-        variable: '${envName}_FILE'
-    ])
-
-    sh '''
-    chmod -R u+@ ${envPath}
-    cp "${${envName}_FILE}" ${envPath}/.env
+        file(credentialsId: envName, 
+        variable: 'ENV_FILE')
+    ]) {
+        sh """
+            chmod -R u+w ${envPath}
+            cp "${ENV_FILE}" ${envPath}/.env
+            ls -l ${envPath}/.env
+        """
+    }
 }
