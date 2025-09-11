@@ -9,5 +9,5 @@ def call(String imageName){
         echo ' Logging in to DockerHub...'
         echo "${DOCKER_PASS}" | docker login --username "${DOCKER_USER}" --password-stdin
 
-        docker rmi {imageName}:${BUILD_TAG} || true
+        docker rmi {imageName}:${BUILD_TAG} || true"""
 }
